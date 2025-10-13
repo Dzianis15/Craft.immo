@@ -271,14 +271,32 @@ $("#leadForm").addEventListener("submit", (e)=>{
     message: f.get("message")||""
   };
 
-  // TODO: заменить на ваш endpoint (ex: /api/leads) — здесь просто имитация
-  console.log("Lead envoyé:", payload);
+  // === Отправка формы через Formspree ===
+const endpoint = https://formspree.io/f/mkgqppvv
 
-  $("#formStatus").innerHTML = "Merci ! Votre demande a été envoyée. Un conseiller CRAFT vous contactera rapidement.";
-  $("#formStatus").style.color = "var(--ok)";
-  e.target.reset();
-});
-</script>
-</body>
-</html>
+try {
+  const resp = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify({
+      _subject: `Lead: Le Grand Clos | Lot ${payload.lot} | ${payload.type}`,
+      _replyto: payload.email,
+      ...payload
+    })
+  });
+
+  const s = $("#formStatus");
+  if (resp.ok) {
+    s.innerHTML = "Merci ! Votre demande a été envoyée. Un conseiller CRAFT vous contactera rapidement.";
+    s.style.color = "var(--ok)";
+    e.target.reset();
+  } else {
+    s.innerHTML = "Oups… impossible d’envoyer la demande. Réessayez plus tard ou contactez-nous par téléphone.";
+    s.style.color = "var(--danger)";
+  }
+} catch (err) {
+  const s = $("#formStatus");
+  s.innerHTML = "Erreur réseau. Vérifiez la connexion et réessayez.";
+  s.style.color = "var(--danger)";
+}
 
