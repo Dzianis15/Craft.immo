@@ -249,7 +249,7 @@ document.addEventListener('change', (e)=>{
 });
 
 // Formulaire (démo sans backend)
-$("#leadForm").addEventListener("submit", (e)=>{
+$("#leadForm").addEventListener("submit", async (e)=>{
   e.preventDefault();
   const f = new FormData(e.target);
   if(!(f.get("lastName") && f.get("firstName") && f.get("phone") && f.get("email") && f.get("consent"))){
@@ -272,7 +272,7 @@ $("#leadForm").addEventListener("submit", (e)=>{
   };
 
   // === Отправка формы через Formspree ===
-const endpoint = https://formspree.io/f/mkgqppvv
+const endpoint = "https://formspree.io/f/mkgqppyv";
 
 try {
   const resp = await fetch(endpoint, {
