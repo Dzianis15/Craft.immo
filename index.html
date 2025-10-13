@@ -1,1 +1,284 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Le Grand Clos – Sélection de lot | CRAFT IMMO</title>
+<style>
+  :root{
+    --brand:#23A3FF; /* bleu CRAFT (можно подправить) */
+    --ink:#1c1f24; --muted:#6b7280; --bg:#f7f9fc; --card:#fff; --ok:#10b981; --warn:#f59e0b; --danger:#ef4444;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{max-width:880px;margin:24px auto;padding:0 16px}
+  header{display:flex;gap:12px;align-items:center;margin:8px 0 16px}
+  .logo{width:28px;height:28px;border-radius:6px;background:var(--brand);display:inline-block}
+  h1{font-size:clamp(22px,3.6vw,32px);margin:0}
+  .card{background:var(--card);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.06);padding:18px;margin:14px 0}
+  .step-title{font-weight:700;margin:0 0 8px}
+  fieldset{border:0;padding:0;margin:0}
+  .choices{display:grid;gap:10px}
+  .choices.grid-3{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  label.choice{border:1.5px solid #e5e7eb;border-radius:12px;padding:12px;cursor:pointer;display:flex;gap:10px;align-items:center;background:#fff;transition:.2s}
+  label.choice:hover{border-color:var(--brand)}
+  input[type=radio],input[type=checkbox]{accent-color:var(--brand)}
+  .hint{color:var(--muted);font-size:14px}
+  .hidden{display:none}
+  .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#eef6ff;color:#0b5cab;font-weight:600;font-size:12px}
+  .price{font-size:22px;font-weight:800}
+  .btn{display:inline-block;padding:12px 16px;border-radius:12px;border:0;background:var(--brand);color:#fff;font-weight:700;cursor:pointer}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .grid{display:grid;gap:12px}
+  .grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  input[type=text],input[type=tel],input[type=email],select,textarea{
+    width:100%;padding:12px;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;font:inherit
+  }
+  textarea{min-height:110px;resize:vertical}
+  .badge{font-size:12px;padding:2px 8px;border-radius:8px}
+  .badge.res{background:#fff3cd;color:#7a5900;border:1px solid #ffe69c}
+  .footer-note{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="logo" aria-hidden="true"></span>
+      <div>
+        <h1>Le Grand Clos — Votre sélection de lot</h1>
+        <div class="hint">Maisons T4 (84 m²), T5 Classique (106 m²), T5 Contemporain (104 m²) — Le Quiou (22630)</div>
+      </div>
+    </header>
+
+    <!-- STEP 0: Intention -->
+    <section id="step0" class="card">
+      <p class="step-title">Souhaitez-vous obtenir des informations sur un lot disponible&nbsp;?</p>
+      <fieldset class="choices grid-3" role="radiogroup" aria-label="Intention">
+        <label class="choice"><input type="radio" name="intent" value="yes" /> Oui, je cherche un lot</label>
+        <label class="choice"><input type="radio" name="intent" value="no" /> Non, juste découvrir le projet</label>
+      </fieldset>
+      <div class="hint">Sélectionnez « Oui » pour démarrer le configurateur.</div>
+    </section>
+
+    <!-- STEP 1: Type de maison -->
+    <section id="step1" class="card hidden">
+      <p class="step-title">Quel type de maison vous intéresse&nbsp;? <span class="pill">Choix unique</span></p>
+      <fieldset class="choices grid-3" role="radiogroup" aria-label="Type de maison">
+        <label class="choice"><input type="radio" name="type" value="T4" /> T4 — 84 m²</label>
+        <label class="choice"><input type="radio" name="type" value="T5_classique" /> T5 Classique — 106 m²</label>
+        <label class="choice"><input type="radio" name="type" value="T5_contemporain" /> T5 Contemporain — 104 m²</label>
+      </fieldset>
+      <div class="hint">Vous pourrez ensuite préciser le lot.</div>
+    </section>
+
+    <!-- STEP 2: Lot précis ? -->
+    <section id="step2" class="card hidden">
+      <p class="step-title">Souhaitez-vous choisir un lot précis&nbsp;?</p>
+      <fieldset class="choices grid-3" role="radiogroup" aria-label="Lot précis">
+        <label class="choice"><input type="radio" name="hasLot" value="yes" /> Oui, choisir un lot</label>
+        <label class="choice"><input type="radio" name="hasLot" value="no" /> Peu importe, proposez-moi</label>
+      </fieldset>
+      <div class="hint">Nous affichons jusqu’à 10 premiers lots. Les lots 12–13 sont indiqués en « Réservé ».</div>
+    </section>
+
+    <!-- STEP 3: Choix du lot -->
+    <section id="step3" class="card hidden">
+      <p class="step-title">Sélectionnez votre lot</p>
+      <div id="lotList" class="choices"></div>
+      <div class="hint">Seuls les lots correspondant au type choisi sont proposés.</div>
+    </section>
+
+    <!-- STEP 4: Prestations -->
+    <section id="step4" class="card hidden">
+      <p class="step-title">Souhaitez-vous la version <strong>Classique</strong> ou <strong>Premium</strong>&nbsp;?</p>
+      <fieldset class="choices grid-3" role="radiogroup" aria-label="Prestations">
+        <label class="choice"><input type="radio" name="pack" value="classique" /> Classique</label>
+        <label class="choice"><input type="radio" name="pack" value="premium" /> Premium</label>
+      </fieldset>
+      <div class="hint">La différence porte sur les finitions et certains équipements (détails sur demande).</div>
+    </section>
+
+    <!-- STEP 5: Récap + Prix -->
+    <section id="recap" class="card hidden">
+      <p class="step-title">Votre sélection</p>
+      <div id="summary"></div>
+      <hr style="border:none;border-top:1px solid #eee;margin:12px 0">
+      <div id="priceLine" class="price"></div>
+      <div class="hint">Prix indicatifs TTC au 01/08/2025. Sous réserve de disponibilité et d’éligibilité.</div>
+    </section>
+
+    <!-- STEP 6: Contact -->
+    <section id="contact" class="card hidden">
+      <p class="step-title">Recevoir la documentation par e-mail ou être rappelé</p>
+      <form id="leadForm" class="grid" novalidate>
+        <div class="grid cols-2">
+          <div><label>Nom*<br><input type="text" name="lastName" required></label></div>
+          <div><label>Prénom*<br><input type="text" name="firstName" required></label></div>
+        </div>
+        <div class="grid cols-2">
+          <div><label>Téléphone*<br><input type="tel" name="phone" required></label></div>
+          <div><label>E-mail*<br><input type="email" name="email" required></label></div>
+        </div>
+
+        <fieldset class="choices">
+          <legend class="hint">Options souhaitées (facultatif)</legend>
+          <label class="choice"><input type="checkbox" name="opt_docs" /> Recevoir la documentation complète</label>
+          <label class="choice"><input type="checkbox" name="opt_fiche" /> Fiche technique de la maison</label>
+          <label class="choice"><input type="checkbox" name="opt_vefa" /> Informations sur le financement VEFA</label>
+          <label class="choice"><input type="checkbox" name="opt_call" /> Être rappelé par un conseiller</label>
+          <label class="choice"><input type="checkbox" name="opt_visit" /> Demander une visite du terrain</label>
+        </fieldset>
+
+        <label>Vos précisions (facultatif)<br>
+          <textarea name="message" placeholder="Ex. créneau d’appel, remarques…"></textarea>
+        </label>
+
+        <label class="hint"><input type="checkbox" name="consent" required /> J’accepte d’être recontacté au sujet de ma demande (RGPD).</label>
+
+        <button class="btn" type="submit">Envoyer ma demande</button>
+        <div id="formStatus" class="hint"></div>
+        <div class="footer-note">SAS CRAFT — contact@craft.immo — +33 1 88 24 17 76</div>
+      </form>
+    </section>
+  </div>
+
+<script>
+/* ===== Données projet =====
+   Types & surfaces issues de la présentation et du plan.
+   Prix Classique/Premium: grilles du 01/08/2025.
+*/
+const TYPES = {
+  T4: { label: "T4", surface: 84 },
+  T5_classique: { label: "T5 Classique", surface: 106 },
+  T5_contemporain: { label: "T5 Contemporain", surface: 104 },
+};
+
+// Répartition des lots (on affiche 1→10; 12–13 marqués «Réservé»)
+const LOTS = [
+  { lot:1,  type:"T4",              terrain:398, classique:217400, premium:258000, dispo:true },
+  { lot:2,  type:"T5_classique",    terrain:377, classique:246500, premium:293000, dispo:true },
+  { lot:3,  type:"T5_classique",    terrain:338, classique:240500, premium:286000, dispo:true },
+  { lot:4,  type:"T4",              terrain:438, classique:237400, premium:282500, dispo:true },
+  { lot:5,  type:"T5_contemporain", terrain:690, classique:262500, premium:312000, dispo:true },
+  { lot:6,  type:"T4",              terrain:524, classique:227400, premium:270500, dispo:true },
+  { lot:7,  type:"T4",              terrain:540, classique:227400, premium:270500, dispo:true },
+  { lot:8,  type:"T5_contemporain", terrain:730, classique:262500, premium:312000, dispo:true },
+  { lot:9,  type:"T5_classique",    terrain:370, classique:246000, premium:292500, dispo:true },
+  { lot:10, type:"T5_classique",    terrain:380, classique:246000, premium:292500, dispo:true },
+  // Options en réserve (affichées mais désactivées)
+  { lot:12, type:"T5_contemporain", terrain:475, classique:262000, premium:311500, dispo:false},
+  { lot:13, type:"T5_contemporain", terrain:455, classique:262000, premium:311500, dispo:false},
+];
+
+// ===== État du wizard =====
+const state = { intent:null, type:null, hasLot:null, lot:null, pack:null };
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+function show(id, yes=true){ const el = $("#"+id); el.classList.toggle("hidden", !yes); }
+
+function nextFromIntent(){
+  state.intent = document.querySelector('input[name="intent"]:checked')?.value || null;
+  show("step1", state.intent==="yes");
+  show("step2", false); show("step3", false); show("step4", false); show("recap", false); show("contact", false);
+}
+function nextFromType(){
+  state.type = document.querySelector('input[name="type"]:checked')?.value || null;
+  if(!state.type) return;
+  show("step2", true); show("step3", false); show("step4", false); show("recap", false); show("contact", false);
+}
+function nextFromHasLot(){
+  state.hasLot = document.querySelector('input[name="hasLot"]:checked')?.value || null;
+  if(state.hasLot==="yes"){ renderLots(); show("step3", true); show("step4", false); }
+  else { state.lot = null; show("step3", false); show("step4", true); }
+}
+function renderLots(){
+  const wrap = $("#lotList");
+  wrap.innerHTML = "";
+  const subset = LOTS.filter(l => (l.lot<=10 || !l.dispo) && l.type===state.type);
+  subset.forEach(l=>{
+    const id = "lot-"+l.lot;
+    const disabled = !l.dispo;
+    const label = `
+      <label class="choice" ${disabled?'style="opacity:.6"':''}>
+        <input type="radio" name="lot" value="${l.lot}" ${disabled?'disabled':''}>
+        Lot ${l.lot} — ${TYPES[l.type].label} · ${TYPES[l.type].surface} m² · Terrain ${l.terrain} m²
+        ${disabled?'<span class="badge res" style="margin-left:auto">Réservé</span>':''}
+      </label>`;
+    wrap.insertAdjacentHTML("beforeend", label);
+  });
+}
+function nextFromLot(){
+  const chosen = document.querySelector('input[name="lot"]:checked');
+  state.lot = chosen ? parseInt(chosen.value,10) : null;
+  if(state.hasLot==="yes" && !state.lot) return;
+  show("step4", true);
+}
+function nextFromPack(){
+  state.pack = document.querySelector('input[name="pack"]:checked')?.value || null;
+  if(!state.pack) return;
+  buildRecap();
+  show("recap", true);
+  show("contact", true);
+  window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"});
+}
+function fmtEUR(n){ return n.toLocaleString('fr-FR',{style:'currency',currency:'EUR', maximumFractionDigits:0}); }
+
+function buildRecap(){
+  const lotObj = state.lot ? LOTS.find(l=>l.lot===state.lot) :
+                 LOTS.filter(l=>l.dispo && l.type===state.type && l.lot<=10)[0]; // proposit° automatique
+  const packPrice = state.pack==="premium" ? lotObj.premium : lotObj.classique;
+  const packLabel = state.pack==="premium" ? "Premium" : "Classique";
+
+  state._resolvedLot = lotObj; // garder sous la main
+  $("#summary").innerHTML = `
+    <div><strong>Type :</strong> ${TYPES[lotObj.type].label} (${TYPES[lotObj.type].surface} m²)</div>
+    <div><strong>Lot :</strong> ${lotObj.lot} (Terrain ${lotObj.terrain} m²)</div>
+    <div><strong>Prestations :</strong> ${packLabel}</div>`;
+  $("#priceLine").textContent = `Prix indicatif : ${fmtEUR(packPrice)} TTC`;
+}
+
+// Listeners
+$$('input[name="intent"]').forEach(i=>i.addEventListener('change', nextFromIntent));
+$$('input[name="type"]').forEach(i=>i.addEventListener('change', nextFromType));
+$$('input[name="hasLot"]').forEach(i=>i.addEventListener('change', nextFromHasLot));
+document.addEventListener('change', (e)=>{
+  if(e.target.name==="lot") nextFromLot();
+  if(e.target.name==="pack") nextFromPack();
+});
+
+// Formulaire (démo sans backend)
+$("#leadForm").addEventListener("submit", (e)=>{
+  e.preventDefault();
+  const f = new FormData(e.target);
+  if(!(f.get("lastName") && f.get("firstName") && f.get("phone") && f.get("email") && f.get("consent"))){
+    $("#formStatus").textContent = "Merci de renseigner tous les champs obligatoires (*) et d’accepter la recontactation.";
+    $("#formStatus").style.color = "var(--danger)";
+    return;
+  }
+  const sel = state._resolvedLot;
+  const payload = {
+    lot: sel.lot, type: TYPES[sel.type].label, surface: TYPES[sel.type].surface,
+    terrain: sel.terrain, pack: state.pack,
+    price: state.pack==="premium" ? sel.premium : sel.classique,
+    lastName: f.get("lastName"), firstName: f.get("firstName"),
+    phone: f.get("phone"), email: f.get("email"),
+    options: {
+      docs: !!f.get("opt_docs"), fiche: !!f.get("opt_fiche"),
+      vefa: !!f.get("opt_vefa"), call: !!f.get("opt_call"), visit: !!f.get("opt_visit")
+    },
+    message: f.get("message")||""
+  };
+
+  // TODO: заменить на ваш endpoint (ex: /api/leads) — здесь просто имитация
+  console.log("Lead envoyé:", payload);
+
+  $("#formStatus").innerHTML = "Merci ! Votre demande a été envoyée. Un conseiller CRAFT vous contactera rapidement.";
+  $("#formStatus").style.color = "var(--ok)";
+  e.target.reset();
+});
+</script>
+</body>
+</html>
 
