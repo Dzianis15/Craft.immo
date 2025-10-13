@@ -271,7 +271,7 @@ $("#leadForm").addEventListener("submit", async (e)=>{
     message: f.get("message")||""
   };
 
-  // === Отправка формы через Formspree ===
+ // === Отправка формы через Formspree ===
 const endpoint = "https://formspree.io/f/mkgqppyv";
 
 try {
@@ -299,4 +299,8 @@ try {
   s.innerHTML = "Erreur réseau. Vérifiez la connexion et réessayez.";
   s.style.color = "var(--danger)";
 }
+});  <!-- закрываем addEventListener -->
 
+</script>
+</body>
+</html>
