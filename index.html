@@ -134,15 +134,25 @@ function setLangButtons(){
 
 function setLabelAfterInput(labelEl, text){
   if(!labelEl) return;
-  // найдём/создадим span после input, чтобы не ломать слушатели
-  let span = labelEl.querySelector("span._t");
+  const inp = labelEl.querySelector('input');
+  if(!inp) return;
+
+  // убрать всё, кроме input и нашего span._t
+  Array.from(labelEl.childNodes).forEach(n=>{
+    if(n === inp) return;
+    if(n.nodeType === 1 && n.classList.contains('_t')) return; // оставить существующий span._t
+    labelEl.removeChild(n);
+  });
+
+  // создать/обновить span с переводом
+  let span = labelEl.querySelector('span._t');
   if(!span){
-    span = document.createElement("span");
-    span.className = "_t";
-    span.style.marginLeft = "6px";
+    span = document.createElement('span');
+    span.className = '_t';
+    span.style.marginLeft = '6px';
     labelEl.appendChild(span);
   }
-  span.textContent = " " + text;
+  span.textContent = ' ' + text;
 }
 
 function translateUI(){
@@ -212,8 +222,9 @@ function translateUI(){
   setLabelAfterInput(document.querySelector('label.choice:has([name="opt_visit"])'), T.optVisit);
 
   // Consent
-  const consentLab = document.querySelector('input[name="consent"]')?.closest("label");
-  if(consentLab){
+ const consentLab = document.querySelector('input[name="consent"]')?.closest("label");
+if (consentLab) setLabelAfterInput(consentLab, T.consent);
+
     // оставим чекбокс, заменим текст после
     let span = consentLab.querySelector("span._t");
     if(!span){ span = document.createElement("span"); span.className="_t"; span.style.marginLeft="6px"; consentLab.appendChild(span); }
@@ -444,7 +455,7 @@ function renderLots(){
       <label class="choice" ${disabled?'style="opacity:.6"':''}>
         <input type="radio" name="lot" value="${l.lot}" ${disabled?'disabled':''}>
         Lot ${l.lot} — ${TYPES[l.type].label} · ${TYPES[l.type].surface} m² · Terrain ${l.terrain} m²
-        ${disabled?'<span class="badge res" style="margin-left:auto">Réservé</span>':''}
+        ${disabled?'<span class="badge res" style="margin-left:auto">'+(window.__I18N__?.reserved||'Réservé')+'</span>':''}
       </label>`;
     wrap.insertAdjacentHTML("beforeend", label);
   });
