@@ -286,14 +286,37 @@ try {
   });
 
   const s = $("#formStatus");
-  if (resp.ok) {
-    s.innerHTML = "Merci ! Votre demande a été envoyée. Un conseiller CRAFT vous contactera rapidement.";
-    s.style.color = "var(--ok)";
-    e.target.reset();
-  } else {
-    s.innerHTML = "Oups… impossible d’envoyer la demande. Réessayez plus tard ou contactez-nous par téléphone.";
-    s.style.color = "var(--danger)";
-  }
+if (resp.ok) {
+  // Скрываем форму
+  e.target.classList.add("hidden");
+
+  // Показываем финальное сообщение с контактами
+  const wrap = document.createElement("div");
+  wrap.style.textAlign = "center";
+  wrap.style.padding = "60px 20px";
+  wrap.style.fontSize = "18px";
+  wrap.innerHTML = `
+    <h2 style="color:var(--ok);font-size:26px;margin-bottom:20px;">Merci pour votre demande !</h2>
+    <p>Notre équipe CRAFT vous contactera sous peu.</p>
+    <hr style="margin:30px auto;width:120px;border:0;border-top:2px solid #e5e7eb;">
+    <p style="font-size:16px;color:var(--muted);margin-top:30px;">
+      <strong>CRAFT IMMO</strong><br>
+      <a href="mailto:contact@craft.immo" style="color:var(--brand);text-decoration:none;">contact@craft.immo</a><br>
+      📞 +33 1 88 24 17 76
+    </p>
+    <p style="margin-top:40px;font-size:14px;color:var(--muted);">
+      Merci de votre confiance !<br>
+      Vous pouvez fermer cette page en toute sécurité.
+    </p>
+  `;
+  s.parentElement.appendChild(wrap);
+
+  // Убираем статусную строку
+  s.textContent = "";
+} else {
+  s.innerHTML = "Oups… impossible d’envoyer la demande. Réessayez plus tard ou contactez-nous par téléphone.";
+  s.style.color = "var(--danger)";
+}
 } catch (err) {
   const s = $("#formStatus");
   s.innerHTML = "Erreur réseau. Vérifiez la connexion et réessayez.";
