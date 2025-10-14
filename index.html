@@ -1,5 +1,245 @@
 <!doctype html>
 <html lang="fr">
+<head>…(как было)…</head>
+<body>
+  <div class="wrap">
+    <header>…(как было)…</header>
+
+    <!-- Переключатель языков СЮДА -->
+    <div class="card" id="langBar" style="display:flex;gap:8px;align-items:center;justify-content:flex-end">
+      <button class="btn" id="langFR" type="button" style="padding:8px 12px">FR</button>
+      <button class="btn" id="langEN" type="button" style="padding:8px 12px;opacity:.7;background:#111">EN</button>
+    </div>
+    
+<script>
+/* ==== I18N: FR / EN ==== */
+…весь твой i18n код…
+</script>
+
+<script>
+/* твой основной код: TYPES, LOTS, renderLots и т.д. */
+
+const LANG = {
+  fr: {
+    headerTitle: "Le Grand Clos — Votre sélection de lot",
+    headerHint: "Maisons T4 (84 m²), T5 Classique (106 m²), T5 Contemporain (104 m²) — Le Quiou (22630)",
+
+    step0Title: "Souhaitez-vous obtenir des informations sur un lot disponible ?",
+    intentYes: "Oui, je cherche un lot",
+    intentNo: "Non, juste découvrir le projet",
+
+    step1Title: "Quel type de maison vous intéresse ?",
+    typeT4: "T4 — 84 m²",
+    typeT5c: "T5 Classique — 106 m²",
+    typeT5cont: "T5 Contemporain — 104 m²",
+
+    step2Title: "Souhaitez-vous choisir un lot précis ?",
+    hasLotYes: "Oui, choisir un lot",
+    hasLotNo: "Peu importe, proposez-moi",
+
+    step3Title: "Sélectionnez votre lot",
+    reserved: "Réservé",
+
+    step4Title: "Souhaitez-vous la version Classique ou Premium ?",
+    packClassique: "Classique",
+    packPremium: "Premium",
+
+    step5Title: "Votre sélection",
+    priceHint: "Prix indicatifs TTC au 01/08/2025. Sous réserve de disponibilité et d’éligibilité.",
+
+    step6Title: "Recevoir la documentation par e-mail ou être rappelé",
+    fLastName: "Nom*",
+    fFirstName: "Prénom*",
+    fPhone: "Téléphone*",
+    fEmail: "E-mail*",
+    optDocs: "Recevoir la documentation complète",
+    optFiche: "Fiche technique de la maison",
+    optVEFA: "Informations sur le financement VEFA",
+    optCall: "Être rappelé par un conseiller",
+    optVisit: "Demander une visite du terrain",
+    consent: "J’accepte d’être recontacté au sujet de ma demande (RGPD).",
+    send: "Envoyer ma demande",
+
+    msgOk: "Merci ! Votre demande a été envoyée. Un conseiller CRAFT vous contactera rapidement.",
+    msgFail: "Oups… impossible d’envoyer la demande. Réessayez plus tard ou contactez-nous par téléphone.",
+    msgNeed: "Merci de renseigner tous les champs obligatoires (*) et d’accepter la recontactation.",
+    msgNet: "Erreur réseau. Vérifiez la connexion et réessayez.",
+
+    // bloc «спасибо»
+    thanksTitle: "Merci pour votre demande !",
+    thanksLead: "Notre équipe CRAFT vous contactera sous peu.",
+    thanksClose: "Merci de votre confiance !<br>Vous pouvez fermer cette page en toute sécurité."
+  },
+  en: {
+    headerTitle: "Le Grand Clos — Select your lot",
+    headerHint: "Homes T4 (84 m²), T5 Classic (106 m²), T5 Contemporary (104 m²) — Le Quiou (22630)",
+
+    step0Title: "Would you like to get information about an available lot?",
+    intentYes: "Yes, I’m looking for a lot",
+    intentNo: "No, just exploring the project",
+
+    step1Title: "Which house type are you interested in?",
+    typeT4: "T4 — 84 m²",
+    typeT5c: "T5 Classic — 106 m²",
+    typeT5cont: "T5 Contemporary — 104 m²",
+
+    step2Title: "Do you want to pick a specific lot?",
+    hasLotYes: "Yes, choose a lot",
+    hasLotNo: "No preference, suggest one",
+
+    step3Title: "Select your lot",
+    reserved: "Reserved",
+
+    step4Title: "Do you prefer the Classic or Premium version?",
+    packClassique: "Classic",
+    packPremium: "Premium",
+
+    step5Title: "Your selection",
+    priceHint: "Indicative TTC prices as of 01/08/2025. Subject to availability and eligibility.",
+
+    step6Title: "Receive documentation by email or request a call back",
+    fLastName: "Last name*",
+    fFirstName: "First name*",
+    fPhone: "Phone*",
+    fEmail: "Email*",
+    optDocs: "Receive full documentation",
+    optFiche: "House technical datasheet",
+    optVEFA: "VEFA financing information",
+    optCall: "Be called back by an advisor",
+    optVisit: "Request a site visit",
+    consent: "I agree to be contacted regarding my request (GDPR).",
+    send: "Send my request",
+
+    msgOk: "Thanks! Your request has been sent. A CRAFT advisor will contact you shortly.",
+    msgFail: "Oops… couldn’t send your request. Please try again later or call us.",
+    msgNeed: "Please fill all required fields (*) and accept to be contacted.",
+    msgNet: "Network error. Please check your connection and try again.",
+
+    thanksTitle: "Thank you for your request!",
+    thanksLead: "Our CRAFT team will contact you shortly.",
+    thanksClose: "Thank you for your trust!<br>You can safely close this page."
+  }
+};
+
+let currentLang = (new URLSearchParams(location.search).get("lang")||"fr").toLowerCase();
+function setLangButtons(){
+  const fr = document.getElementById("langFR");
+  const en = document.getElementById("langEN");
+  if(!fr||!en) return;
+  if(currentLang==="fr"){ fr.style.opacity=1; en.style.opacity=.7; }
+  else { fr.style.opacity=.7; en.style.opacity=1; }
+  fr.onclick=()=>{ currentLang="fr"; translateUI(); history.replaceState({}, "", location.pathname+"?lang=fr"); setLangButtons(); };
+  en.onclick=()=>{ currentLang="en"; translateUI(); history.replaceState({}, "", location.pathname+"?lang=en"); setLangButtons(); };
+}
+
+function setLabelAfterInput(labelEl, text){
+  if(!labelEl) return;
+  // найдём/создадим span после input, чтобы не ломать слушатели
+  let span = labelEl.querySelector("span._t");
+  if(!span){
+    span = document.createElement("span");
+    span.className = "_t";
+    span.style.marginLeft = "6px";
+    labelEl.appendChild(span);
+  }
+  span.textContent = " " + text;
+}
+
+function translateUI(){
+  const T = LANG[currentLang];
+
+  // Заголовок и подзаголовок
+  const h1 = document.querySelector("header h1");
+  const hint = document.querySelector("header .hint");
+  if(h1) h1.textContent = T.headerTitle;
+  if(hint) hint.textContent = T.headerHint;
+
+  // Step 0
+  const s0 = document.querySelector("#step0 .step-title");
+  if(s0) s0.textContent = T.step0Title;
+  setLabelAfterInput(document.querySelector('label.choice:has([name="intent"][value="yes"])'), T.intentYes);
+  setLabelAfterInput(document.querySelector('label.choice:has([name="intent"][value="no"])'), T.intentNo);
+
+  // Step 1
+  const s1 = document.querySelector("#step1 .step-title");
+  if(s1) s1.childNodes[0].nodeValue = T.step1Title + " ";
+  setLabelAfterInput(document.querySelector('label.choice:has([name="type"][value="T4"])'), T.typeT4);
+  setLabelAfterInput(document.querySelector('label.choice:has([name="type"][value="T5_classique"])'), T.typeT5c);
+  setLabelAfterInput(document.querySelector('label.choice:has([name="type"][value="T5_contemporain"])'), T.typeT5cont);
+
+  // Step 2
+  const s2 = document.querySelector("#step2 .step-title");
+  if(s2) s2.textContent = T.step2Title;
+  setLabelAfterInput(document.querySelector('label.choice:has([name="hasLot"][value="yes"])'), T.hasLotYes);
+  setLabelAfterInput(document.querySelector('label.choice:has([name="hasLot"][value="no"])'), T.hasLotNo);
+
+  // Step 3
+  const s3 = document.querySelector("#step3 .step-title");
+  if(s3) s3.textContent = T.step3Title;
+  // ярлык "Réservé/Reserved" подставим в момент генерации списка лотов (ниже мы используем T.reserved)
+
+  // Step 4
+  const s4 = document.querySelector("#step4 .step-title");
+  if(s4) s4.textContent = T.step4Title;
+  setLabelAfterInput(document.querySelector('label.choice:has([name="pack"][value="classique"])'), T.packClassique);
+  setLabelAfterInput(document.querySelector('label.choice:has([name="pack"][value="premium"])'), T.packPremium);
+
+  // Step 5
+  const s5 = document.querySelector("#recap .step-title");
+  if(s5) s5.textContent = T.step5Title;
+  const priceHint = document.querySelector("#recap .hint");
+  if(priceHint) priceHint.textContent = T.priceHint;
+
+  // Step 6 — форма
+  const s6 = document.querySelector("#contact .step-title");
+  if(s6) s6.textContent = T.step6Title;
+
+  // Подписи к полям формы
+  const labLast = document.querySelector('input[name="lastName"]')?.closest("label");
+  const labFirst = document.querySelector('input[name="firstName"]')?.closest("label");
+  const labPhone = document.querySelector('input[name="phone"]')?.closest("label");
+  const labEmail = document.querySelector('input[name="email"]')?.closest("label");
+  if(labLast) labLast.childNodes[0].nodeValue = T.fLastName;
+  if(labFirst) labFirst.childNodes[0].nodeValue = T.fFirstName;
+  if(labPhone) labPhone.childNodes[0].nodeValue = T.fPhone;
+  if(labEmail) labEmail.childNodes[0].nodeValue = T.fEmail;
+
+  // Чекбоксы-опции
+  setLabelAfterInput(document.querySelector('label.choice:has([name="opt_docs"])'), T.optDocs);
+  setLabelAfterInput(document.querySelector('label.choice:has([name="opt_fiche"])'), T.optFiche);
+  setLabelAfterInput(document.querySelector('label.choice:has([name="opt_vefa"])'), T.optVEFA);
+  setLabelAfterInput(document.querySelector('label.choice:has([name="opt_call"])'), T.optCall);
+  setLabelAfterInput(document.querySelector('label.choice:has([name="opt_visit"])'), T.optVisit);
+
+  // Consent
+  const consentLab = document.querySelector('input[name="consent"]')?.closest("label");
+  if(consentLab){
+    // оставим чекбокс, заменим текст после
+    let span = consentLab.querySelector("span._t");
+    if(!span){ span = document.createElement("span"); span.className="_t"; span.style.marginLeft="6px"; consentLab.appendChild(span); }
+    span.textContent = " " + T.consent;
+  }
+
+  // Кнопка отправки
+  const submitBtn = document.querySelector('#leadForm button[type="submit"]');
+  if(submitBtn) submitBtn.textContent = T.send;
+
+  // Сохраним строки статуса (используем ниже в обработчике)
+  window.__I18N__ = {
+    msgOk: T.msgOk, msgFail: T.msgFail, msgNeed: T.msgNeed, msgNet: T.msgNet, reserved: T.reserved,
+    thanksTitle: T.thanksTitle, thanksLead: T.thanksLead, thanksClose: T.thanksClose
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  translateUI();
+  setLangButtons();
+});
+</script>
+
+
+<!doctype html>
+<html lang="fr">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -322,8 +562,8 @@ if (resp.ok) {
   s.innerHTML = "Erreur réseau. Vérifiez la connexion et réessayez.";
   s.style.color = "var(--danger)";
 }
-});  <!-- закрываем addEventListener -->
-
+}); // закрываем addEventListener
 </script>
 </body>
 </html>
+
