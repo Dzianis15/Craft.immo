@@ -57,18 +57,20 @@
       </div>
     </header>
 
+    <!-- Étape 0 -->
     <section id="step0" class="card">
       <p class="step-title">Souhaitez-vous obtenir des informations sur un lot disponible&nbsp;?</p>
-      <fieldset class="choices grid-3" role="radiogroup" aria-label="Intention">
+      <fieldset class="choices grid-3" role="radiogroup">
         <label class="choice"><input type="radio" name="intent" value="yes" /> Oui, je cherche un lot</label>
         <label class="choice"><input type="radio" name="intent" value="no" /> Non, juste découvrir le projet</label>
       </fieldset>
       <div class="hint">Sélectionnez « Oui » pour démarrer le configurateur.</div>
     </section>
 
+    <!-- Étape 1 -->
     <section id="step1" class="card hidden">
       <p class="step-title">Quel type de maison vous intéresse&nbsp;? <span class="pill">Choix unique</span></p>
-      <fieldset class="choices grid-3" role="radiogroup" aria-label="Type de maison">
+      <fieldset class="choices grid-3" role="radiogroup">
         <label class="choice"><input type="radio" name="type" value="T4" /> T4 — 84 m²</label>
         <label class="choice"><input type="radio" name="type" value="T5_classique" /> T5 Classique — 106 m²</label>
         <label class="choice"><input type="radio" name="type" value="T5_contemporain" /> T5 Contemporain — 104 m²</label>
@@ -76,30 +78,34 @@
       <div class="hint">Vous pourrez ensuite préciser le lot.</div>
     </section>
 
+    <!-- Étape 2 -->
     <section id="step2" class="card hidden">
       <p class="step-title">Souhaitez-vous choisir un lot précis&nbsp;?</p>
-      <fieldset class="choices grid-3" role="radiogroup" aria-label="Lot précis">
+      <fieldset class="choices grid-3" role="radiogroup">
         <label class="choice"><input type="radio" name="hasLot" value="yes" /> Oui, choisir un lot</label>
         <label class="choice"><input type="radio" name="hasLot" value="no" /> Peu importe, proposez-moi</label>
       </fieldset>
       <div class="hint">Nous affichons jusqu’à 10 premiers lots. Les lots 12–13 sont indiqués en « Réservé ».</div>
     </section>
 
+    <!-- Étape 3 -->
     <section id="step3" class="card hidden">
       <p class="step-title">Sélectionnez votre lot</p>
       <div id="lotList" class="choices"></div>
       <div class="hint">Seuls les lots correspondant au type choisi sont proposés.</div>
     </section>
 
+    <!-- Étape 4 -->
     <section id="step4" class="card hidden">
       <p class="step-title">Souhaitez-vous la version <strong>Classique</strong> ou <strong>Premium</strong>&nbsp;?</p>
-      <fieldset class="choices grid-3" role="radiogroup" aria-label="Prestations">
+      <fieldset class="choices grid-3" role="radiogroup">
         <label class="choice"><input type="radio" name="pack" value="classique" /> Classique</label>
         <label class="choice"><input type="radio" name="pack" value="premium" /> Premium</label>
       </fieldset>
       <div class="hint">La différence porte sur les finitions et certains équipements (détails sur demande).</div>
     </section>
 
+    <!-- Étape 5 -->
     <section id="recap" class="card hidden">
       <p class="step-title">Votre sélection</p>
       <div id="summary"></div>
@@ -108,6 +114,7 @@
       <div class="hint">Prix indicatifs TTC au 01/08/2025. Sous réserve de disponibilité et d’éligibilité.</div>
     </section>
 
+    <!-- Étape 6 : Formulaire -->
     <section id="contact" class="card hidden">
       <p class="step-title">Recevoir la documentation par e-mail ou être rappelé</p>
       <form id="leadForm" class="grid" novalidate>
@@ -119,7 +126,6 @@
           <div><label>Téléphone*<br><input type="tel" name="phone" required></label></div>
           <div><label>E-mail*<br><input type="email" name="email" required></label></div>
         </div>
-
         <fieldset class="choices">
           <legend class="hint">Options souhaitées (facultatif)</legend>
           <label class="choice"><input type="checkbox" name="opt_docs" /> Recevoir la documentation complète</label>
@@ -128,13 +134,10 @@
           <label class="choice"><input type="checkbox" name="opt_call" /> Être rappelé par un conseiller</label>
           <label class="choice"><input type="checkbox" name="opt_visit" /> Demander une visite du terrain</label>
         </fieldset>
-
         <label>Vos précisions (facultatif)<br>
           <textarea name="message" placeholder="Ex. créneau d’appel, remarques…"></textarea>
         </label>
-
         <label class="hint"><input type="checkbox" name="consent" required /> J’accepte d’être recontacté au sujet de ma demande (RGPD).</label>
-
         <button class="btn" type="submit">Envoyer ma demande</button>
         <div id="formStatus" class="hint"></div>
         <div class="footer-note">SAS CRAFT — contact@craft.immo — +33 1 88 24 17 76</div>
@@ -142,415 +145,53 @@
     </section>
   </div>
 
-  <!-- I18N + переключатель языков (ES5) -->
+  <!-- Scripts -->
   <script>
-  (function(){
-    // --- словарь ---
-    var LANG = {
-      fr: {
-        headerTitle: "Le Grand Clos — Votre sélection de lot",
-        headerHint: "Maisons T4 (84 m²), T5 Classique (106 m²), T5 Contemporain (104 m²) — Le Quiou (22630)",
-        step0Title: "Souhaitez-vous obtenir des informations sur un lot disponible ?",
-        intentYes: "Oui, je cherche un lot",
-        intentNo: "Non, juste découvrir le projet",
-        step1Title: "Quel type de maison vous intéresse ?",
-        typeT4: "T4 — 84 m²",
-        typeT5c: "T5 Classique — 106 m²",
-        typeT5cont: "T5 Contemporain — 104 m²",
-        step2Title: "Souhaitez-vous choisir un lot précis ?",
-        hasLotYes: "Oui, choisir un lot",
-        hasLotNo: "Peu importe, proposez-moi",
-        step3Title: "Sélectionnez votre lot",
-        reserved: "Réservé",
-        step4Title: "Souhaitez-vous la version Classique ou Premium ?",
-        packClassique: "Classique",
-        packPremium: "Premium",
-        step5Title: "Votre sélection",
-        priceHint: "Prix indicatifs TTC au 01/08/2025. Sous réserve de disponibilité et d’éligibilité.",
-        step6Title: "Recevoir la documentation par e-mail ou être rappelé",
-        fLastName: "Nom*",
-        fFirstName: "Prénom*",
-        fPhone: "Téléphone*",
-        fEmail: "E-mail*",
-        optDocs: "Recevoir la documentation complète",
-        optFiche: "Fiche technique de la maison",
-        optVEFA: "Informations sur le financement VEFA",
-        optCall: "Être rappelé par un conseiller",
-        optVisit: "Demander une visite du terrain",
-        consent: "J’accepte d’être recontacté au sujet de ma demande (RGPD).",
-        send: "Envoyer ma demande",
-        msgOk: "Merci ! Votre demande a été envoyée. Un conseiller CRAFT vous contactera rapidement.",
-        msgFail: "Oups… impossible d’envoyer la demande. Réessayez plus tard ou contactez-nous par téléphone.",
-        msgNeed: "Merci de renseigner tous les champs obligatoires (*) et d’accepter la recontactation.",
-        msgNet: "Erreur réseau. Vérifiez la connexion et réessayez.",
-        thanksTitle: "Merci pour votre demande !",
-        thanksLead: "Notre équipe CRAFT vous contactera sous peu.",
-        thanksClose: "Merci de votre confiance !<br>Vous pouvez fermer cette page en toute sécurité."
-      },
-      en: {
-        headerTitle: "Le Grand Clos — Select your lot",
-        headerHint: "Homes T4 (84 m²), T5 Classic (106 m²), T5 Contemporary (104 m²) — Le Quiou (22630)",
-        step0Title: "Would you like to get information about an available lot?",
-        intentYes: "Yes, I’m looking for a lot",
-        intentNo: "No, just exploring the project",
-        step1Title: "Which house type are you interested in?",
-        typeT4: "T4 — 84 m²",
-        typeT5c: "T5 Classic — 106 m²",
-        typeT5cont: "T5 Contemporary — 104 m²",
-        step2Title: "Do you want to pick a specific lot?",
-        hasLotYes: "Yes, choose a lot",
-        hasLotNo: "No preference, suggest one",
-        step3Title: "Select your lot",
-        reserved: "Reserved",
-        step4Title: "Do you prefer the Classic or Premium version?",
-        packClassique: "Classic",
-        packPremium: "Premium",
-        step5Title: "Your selection",
-        priceHint: "Indicative TTC prices as of 01/08/2025. Subject to availability and eligibility.",
-        step6Title: "Receive documentation by email or request a call back",
-        fLastName: "Last name*",
-        fFirstName: "First name*",
-        fPhone: "Phone*",
-        fEmail: "Email*",
-        optDocs: "Receive full documentation",
-        optFiche: "House technical datasheet",
-        optVEFA: "VEFA financing information",
-        optCall: "Be called back by an advisor",
-        optVisit: "Request a site visit",
-        consent: "I agree to be contacted regarding my request (GDPR).",
-        send: "Send my request",
-        msgOk: "Thanks! Your request has been sent. A CRAFT advisor will contact you shortly.",
-        msgFail: "Oops… couldn’t send your request. Please try again later or call us.",
-        msgNeed: "Please fill all required fields (*) and accept to be contacted.",
-        msgNet: "Network error. Please check your connection and try again.",
-        thanksTitle: "Thank you for your request!",
-        thanksLead: "Our CRAFT team will contact you shortly.",
-        thanksClose: "Thank you for your trust!<br>You can safely close this page."
-      }
-    };
+  // Простая функция показать/скрыть
+  function show(id, yes){ var el=document.getElementById(id); if(!el)return; el.classList.toggle("hidden",!yes); }
 
-    var STORAGE_KEY = "craft-immo-lang";
+  // Объекты данных
+  var state={intent:null,type:null,hasLot:null,lot:null,pack:null};
+  var TYPES={T4:{label:"T4",surface:84},T5_classique:{label:"T5 Classique",surface:106},T5_contemporain:{label:"T5 Contemporain",surface:104}};
+  var LOTS=[{lot:1,type:"T4",terrain:398,classique:217400,premium:258000,dispo:true},{lot:2,type:"T5_classique",terrain:377,classique:246500,premium:293000,dispo:true},{lot:3,type:"T5_classique",terrain:338,classique:240500,premium:286000,dispo:true},{lot:4,type:"T4",terrain:438,classique:237400,premium:282500,dispo:true},{lot:5,type:"T5_contemporain",terrain:690,classique:262500,premium:312000,dispo:true},{lot:6,type:"T4",terrain:524,classique:227400,premium:270500,dispo:true},{lot:7,type:"T4",terrain:540,classique:227400,premium:270500,dispo:true},{lot:8,type:"T5_contemporain",terrain:730,classique:262500,premium:312000,dispo:true},{lot:9,type:"T5_classique",terrain:370,classique:246000,premium:292500,dispo:true},{lot:10,type:"T5_classique",terrain:380,classique:246000,premium:292500,dispo:true},{lot:12,type:"T5_contemporain",terrain:475,classique:262000,premium:311500,dispo:false},{lot:13,type:"T5_contemporain",terrain:455,classique:262000,premium:311500,dispo:false}];
 
-    function qs(sel){ return document.querySelector(sel); }
-
-    function setLabelAfterInput(labelEl, text){
-      if(!labelEl) return;
-      var inp = labelEl.querySelector('input');
-      if(!inp) return;
-      var nodes = Array.prototype.slice.call(labelEl.childNodes);
-      for(var i=0;i<nodes.length;i++){
-        var n = nodes[i];
-        if(n === inp) continue;
-        if(n.nodeType === 1 && n.classList && n.classList.contains('_t')) continue;
-        labelEl.removeChild(n);
-      }
-      var span = labelEl.querySelector('span._t');
-      if(!span){
-        span = document.createElement('span');
-        span.className = '_t';
-        span.style.marginLeft = '6px';
-        labelEl.appendChild(span);
-      }
-      span.textContent = ' ' + text;
-    }
-
-    function getParam(name){
-      var m = new RegExp('[?&]'+name+'=([^&]*)').exec(location.search);
-      return m ? decodeURIComponent(m[1].replace(/\+/g,' ')) : '';
-    }
-
-    function getInitialLang(){
-      var urlLang = (getParam('lang')||'').toLowerCase();
-      if(urlLang && LANG[urlLang]) return urlLang;
-      var saved = null;
-      try { saved = localStorage.getItem(STORAGE_KEY); } catch(e){}
-      if(saved && LANG[saved]) return saved;
-      var nav = (navigator.language||'fr').toLowerCase();
-      if(nav.indexOf('fr')===0) return 'fr';
-      return 'en';
-    }
-
-    var currentLang = getInitialLang();
-
-    function translateUI(){
-      var T = LANG[currentLang];
-
-      var h1 = document.querySelector("header h1");
-      var hint = document.querySelector("header .hint");
-      if(h1) h1.textContent = T.headerTitle;
-      if(hint) hint.textContent = T.headerHint;
-
-      var s0 = document.querySelector("#step0 .step-title");
-      if(s0) s0.textContent = T.step0Title;
-      setLabelAfterInput(document.querySelector('input[name="intent"][value="yes"]') && document.querySelector('input[name="intent"][value="yes"]').closest('label'), T.intentYes);
-      setLabelAfterInput(document.querySelector('input[name="intent"][value="no"]')  && document.querySelector('input[name="intent"][value="no"]').closest('label'),  T.intentNo);
-
-      var s1 = document.querySelector("#step1 .step-title");
-      if(s1 && s1.firstChild) s1.firstChild.nodeValue = T.step1Title + " ";
-      setLabelAfterInput(document.querySelector('input[name="type"][value="T4"]')               && document.querySelector('input[name="type"][value="T4"]').closest('label'),               T.typeT4);
-      setLabelAfterInput(document.querySelector('input[name="type"][value="T5_classique"]')    && document.querySelector('input[name="type"][value="T5_classique"]').closest('label'),    T.typeT5c);
-      setLabelAfterInput(document.querySelector('input[name="type"][value="T5_contemporain"]') && document.querySelector('input[name="type"][value="T5_contemporain"]').closest('label'), T.typeT5cont);
-
-      var s2 = document.querySelector("#step2 .step-title");
-      if(s2) s2.textContent = T.step2Title;
-      setLabelAfterInput(document.querySelector('input[name="hasLot"][value="yes"]') && document.querySelector('input[name="hasLot"][value="yes"]').closest('label'), T.hasLotYes);
-      setLabelAfterInput(document.querySelector('input[name="hasLot"][value="no"]')  && document.querySelector('input[name="hasLot"][value="no"]').closest('label'),  T.hasLotNo);
-
-      var s3 = document.querySelector("#step3 .step-title");
-      if(s3) s3.textContent = T.step3Title;
-
-      var s4 = document.querySelector("#step4 .step-title");
-      if(s4) s4.textContent = T.step4Title;
-      setLabelAfterInput(document.querySelector('input[name="pack"][value="classique"]') && document.querySelector('input[name="pack"][value="classique"]').closest('label'), T.packClassique);
-      setLabelAfterInput(document.querySelector('input[name="pack"][value="premium"]')   && document.querySelector('input[name="pack"][value="premium"]').closest('label'),  T.packPremium);
-
-      var s5 = document.querySelector("#recap .step-title");
-      if(s5) s5.textContent = T.step5Title;
-      var priceHint = document.querySelector("#recap .hint");
-      if(priceHint) priceHint.textContent = T.priceHint;
-
-      var s6 = document.querySelector("#contact .step-title");
-      if(s6) s6.textContent = T.step6Title;
-
-      var labLast  = document.querySelector('input[name="lastName"]');
-      var labFirst = document.querySelector('input[name="firstName"]');
-      var labPhone = document.querySelector('input[name="phone"]');
-      var labEmail = document.querySelector('input[name="email"]');
-      if(labLast && labLast.closest)  labLast.closest("label").childNodes[0].nodeValue  = T.fLastName;
-      if(labFirst && labFirst.closest) labFirst.closest("label").childNodes[0].nodeValue = T.fFirstName;
-      if(labPhone && labPhone.closest) labPhone.closest("label").childNodes[0].nodeValue = T.fPhone;
-      if(labEmail && labEmail.closest) labEmail.closest("label").childNodes[0].nodeValue = T.fEmail;
-
-      setLabelAfterInput(document.querySelector('input[name="opt_docs"]')  && document.querySelector('input[name="opt_docs"]').closest('label'),  T.optDocs);
-      setLabelAfterInput(document.querySelector('input[name="opt_fiche"]') && document.querySelector('input[name="opt_fiche"]').closest('label'), T.optFiche);
-      setLabelAfterInput(document.querySelector('input[name="opt_vefa"]')  && document.querySelector('input[name="opt_vefa"]').closest('label'),  T.optVEFA);
-      setLabelAfterInput(document.querySelector('input[name="opt_call"]')  && document.querySelector('input[name="opt_call"]').closest('label'),  T.optCall);
-      setLabelAfterInput(document.querySelector('input[name="opt_visit"]') && document.querySelector('input[name="opt_visit"]').closest('label'), T.optVisit);
-
-      var consent = document.querySelector('input[name="consent"]');
-      if(consent && consent.closest) setLabelAfterInput(consent.closest("label"), T.consent);
-
-      var submitBtn = document.querySelector('#leadForm button[type="submit"]');
-      if(submitBtn) submitBtn.textContent = T.send;
-
-      window.__I18N__ = {
-        msgOk: T.msgOk, msgFail: T.msgFail, msgNeed: T.msgNeed, msgNet: T.msgNet,
-        reserved: T.reserved, thanksTitle: T.thanksTitle, thanksLead: T.thanksLead, thanksClose: T.thanksClose
-      };
-
-      var fr = document.getElementById("langFR");
-      var en = document.getElementById("langEN");
-      if(fr && en){
-        if(currentLang==='fr'){ fr.classList.add('active'); en.classList.remove('active'); }
-        else{ en.classList.add('active'); fr.classList.remove('active'); }
-      }
-    }
-
-    function setQueryParam(name, value){
-      var q = location.search ? location.search.substr(1).split('&') : [];
-      var found = false;
-      for(var i=0;i<q.length;i++){
-        if(q[i].split('=')[0]===name){ q[i]=name+'='+encodeURIComponent(value); found=true; break; }
-      }
-      if(!found) q.push(name+'='+encodeURIComponent(value));
-      var newUrl = location.pathname + (q.length ? '?'+q.join('&') : '') + location.hash;
-      history.replaceState({}, '', newUrl);
-    }
-
-    function setLang(lang){
-      if(!LANG[lang]) return;
-      currentLang = lang;
-      try { localStorage.setItem(STORAGE_KEY, lang); } catch(e){}
-      setQueryParam('lang', lang);
-      translateUI();
-    }
-
-    function bindLangButtons(){
-      var fr = document.getElementById("langFR");
-      var en = document.getElementById("langEN");
-      if(fr) fr.addEventListener("click", function(){ setLang('fr'); });
-      if(en) en.addEventListener("click", function(){ setLang('en'); });
-    }
-
-    document.addEventListener("DOMContentLoaded", function(){
-      bindLangButtons();
-      translateUI();
-    });
-
-    window.setLang = setLang; // опционально
-  })();
-  </script>
-
-  <!-- Логика проекта (ES5) -->
-  <script>
-  var TYPES = {
-    T4: { label: "T4", surface: 84 },
-    T5_classique: { label: "T5 Classique", surface: 106 },
-    T5_contemporain: { label: "T5 Contemporain", surface: 104 }
-  };
-
-  var LOTS = [
-    { lot:1,  type:"T4",              terrain:398, classique:217400, premium:258000, dispo:true },
-    { lot:2,  type:"T5_classique",    terrain:377, classique:246500, premium:293000, dispo:true },
-    { lot:3,  type:"T5_classique",    terrain:338, classique:240500, premium:286000, dispo:true },
-    { lot:4,  type:"T4",              terrain:438, classique:237400, premium:282500, dispo:true },
-    { lot:5,  type:"T5_contemporain", terrain:690, classique:262500, premium:312000, dispo:true },
-    { lot:6,  type:"T4",              terrain:524, classique:227400, premium:270500, dispo:true },
-    { lot:7,  type:"T4",              terrain:540, classique:227400, premium:270500, dispo:true },
-    { lot:8,  type:"T5_contemporain", terrain:730, classique:262500, premium:312000, dispo:true },
-    { lot:9,  type:"T5_classique",    terrain:370, classique:246000, premium:292500, dispo:true },
-    { lot:10, type:"T5_classique",    terrain:380, classique:246000, premium:292500, dispo:true },
-    { lot:12, type:"T5_contemporain", terrain:475, classique:262000, premium:311500, dispo:false},
-    { lot:13, type:"T5_contemporain", terrain:455, classique:262000, premium:311500, dispo:false}
-  ];
-
-  var state = { intent:null, type:null, hasLot:null, lot:null, pack:null };
-
-  function $(sel){ return document.querySelector(sel); }
-  function $all(sel){ return Array.prototype.slice.call(document.querySelectorAll(sel)); }
-
-  function show(id, yes){ var el=$("#"+id); if(!el) return; if(typeof yes==="undefined") yes=true; el.classList.toggle("hidden", !yes); }
-
+  // ====== Навигация по шагам ======
   function nextFromIntent(){
-    var c = document.querySelector('input[name="intent"]:checked');
-    state.intent = c ? c.value : null;
-    show("step1", state.intent==="yes");
-    show("step2", false); show("step3", false); show("step4", false); show("recap", false); show("contact", false);
-  }
-  function nextFromType(){
-    var c = document.querySelector('input[name="type"]:checked');
-    state.type = c ? c.value : null;
-    if(!state.type) return;
-    show("step2", true); show("step3", false); show("step4", false); show("recap", false); show("contact", false);
-  }
-  function nextFromHasLot(){
-    var c = document.querySelector('input[name="hasLot"]:checked');
-    state.hasLot = c ? c.value : null;
-    if(state.hasLot==="yes"){ renderLots(); show("step3", true); show("step4", false); }
-    else { state.lot = null; show("step3", false); show("step4", true); }
-  }
-  function renderLots(){
-    var wrap = $("#lotList");
-    if(!wrap) return;
-    wrap.innerHTML = "";
-    var subset = LOTS.filter(function(l){ return (l.lot<=10 || !l.dispo) && l.type===state.type; });
-    subset.forEach(function(l){
-      var disabled = !l.dispo;
-      var html = ''
-        + '<label class="choice"'+(disabled?' style="opacity:.6"':'')+'>'
-        + '  <input type="radio" name="lot" value="'+l.lot+'"'+(disabled?' disabled':'')+'>'
-        + '  Lot '+l.lot+' — '+TYPES[l.type].label+' · '+TYPES[l.type].surface+' m² · Terrain '+l.terrain+' m²'
-        + (disabled ? '  <span class="badge res" style="margin-left:auto">'+(window.__I18N__&&window.__I18N__.reserved?window.__I18N__.reserved:'Réservé')+'</span>' : '')
-        + '</label>';
-      wrap.insertAdjacentHTML("beforeend", html);
-    });
-  }
-  function nextFromLot(){
-    var chosen = document.querySelector('input[name="lot"]:checked');
-    state.lot = chosen ? parseInt(chosen.value,10) : null;
-    if(state.hasLot==="yes" && !state.lot) return;
-    show("step4", true);
-  }
-  function nextFromPack(){
-    var c = document.querySelector('input[name="pack"]:checked');
-    state.pack = c ? c.value : null;
-    if(!state.pack) return;
-    buildRecap();
-    show("recap", true);
-    show("contact", true);
-    window.scrollTo(0, document.body.scrollHeight);
-  }
-  function fmtEUR(n){ try{ return n.toLocaleString('fr-FR',{style:'currency',currency:'EUR', maximumFractionDigits:0}); }catch(e){ return n+' €'; } }
-
-  function buildRecap(){
-    var lotObj = state.lot ? LOTS.filter(function(l){return l.lot===state.lot;})[0]
-                           : LOTS.filter(function(l){return l.dispo && l.type===state.type && l.lot<=10;})[0];
-    if(!lotObj) return;
-    var packPrice = state.pack==="premium" ? lotObj.premium : lotObj.classique;
-    var packLabel = state.pack==="premium" ? "Premium" : "Classique";
-    state._resolvedLot = lotObj;
-    $("#summary").innerHTML = ''
-      + '<div><strong>Type :</strong> '+TYPES[lotObj.type].label+' ('+TYPES[lotObj.type].surface+' m²)</div>'
-      + '<div><strong>Lot :</strong> '+lotObj.lot+' (Terrain '+lotObj.terrain+' m²)</div>'
-      + '<div><strong>Prestations :</strong> '+packLabel+'</div>';
-    $("#priceLine").textContent = 'Prix indicatif : '+fmtEUR(packPrice)+' TTC';
+    var el=document.querySelector('input[name="intent"]:checked');
+    state.intent=el?el.value:null;
+    if(state.intent==="yes"){
+      show("step1",true);show("step2",false);show("step3",false);show("step4",false);show("recap",false);show("contact",false);
+    } else if(state.intent==="no"){
+      state.type=null;state.hasLot=null;state.lot=null;state.pack=null;
+      show("step1",false);show("step2",false);show("step3",false);show("step4",false);show("recap",false);show("contact",true);
+      document.getElementById("leadForm").scrollIntoView({behavior:"smooth"});
+    } else {
+      show("step1",false);show("step2",false);show("step3",false);show("step4",false);show("recap",false);show("contact",false);
+    }
   }
 
-  $all('input[name="intent"]').forEach(function(i){ i.addEventListener('change', nextFromIntent); });
-  $all('input[name="type"]').forEach(function(i){ i.addEventListener('change', nextFromType); });
-  $all('input[name="hasLot"]').forEach(function(i){ i.addEventListener('change', nextFromHasLot); });
-  document.addEventListener('change', function(e){
-    if(e.target && e.target.name==="lot") nextFromLot();
-    if(e.target && e.target.name==="pack") nextFromPack();
+  // Привязка событий
+  document.querySelectorAll('input[name="intent"]').forEach(i=>i.addEventListener("change",nextFromIntent));
+
+  // ====== Отправка формы ======
+  document.getElementById("leadForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    var f=new FormData(this),s=document.getElementById("formStatus");
+    if(!(f.get("lastName")&&f.get("firstName")&&f.get("phone")&&f.get("email")&&f.get("consent"))){
+      s.textContent="Merci de renseigner tous les champs obligatoires (*)";s.style.color="var(--danger)";return;
+    }
+    var payload={
+      lastName:f.get("lastName"),firstName:f.get("firstName"),phone:f.get("phone"),email:f.get("email"),
+      docs:!!f.get("opt_docs"),fiche:!!f.get("opt_fiche"),vefa:!!f.get("opt_vefa"),call:!!f.get("opt_call"),visit:!!f.get("opt_visit"),
+      message:f.get("message")||"",intent:state.intent||"unknown"
+    };
+    fetch("https://formspree.io/f/mkgqppvv",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)})
+    .then(r=>{
+      if(r.ok){this.classList.add("hidden");s.innerHTML="<h2 style='color:var(--ok)'>Merci !</h2><p>Votre demande a été envoyée avec succès.</p>";}
+      else{s.textContent="Erreur d’envoi.";s.style.color="var(--danger)";}
+    })
+    .catch(()=>{s.textContent="Erreur réseau.";s.style.color="var(--danger)";});
   });
-
-  var leadForm = $("#leadForm");
-  if(leadForm){
-    leadForm.addEventListener("submit", function(e){
-      e.preventDefault();
-      var s = $("#formStatus");
-      var f = new FormData(leadForm);
-
-      if(!(f.get("lastName") && f.get("firstName") && f.get("phone") && f.get("email") && f.get("consent"))){
-        s.textContent = (window.__I18N__ && window.__I18N__.msgNeed) ? window.__I18N__.msgNeed : "Merci de renseigner tous les champs obligatoires (*) et d’accepter la recontactation.";
-        s.style.color = "var(--danger)"; return;
-      }
-      var sel = state._resolvedLot;
-      if(!sel){ s.textContent = "Sélection incomplète."; s.style.color="var(--danger)"; return; }
-
-      var payload = {
-        lot: sel.lot, type: TYPES[sel.type].label, surface: TYPES[sel.type].surface,
-        terrain: sel.terrain, pack: state.pack,
-        price: state.pack==="premium" ? sel.premium : sel.classique,
-        lastName: f.get("lastName"), firstName: f.get("firstName"),
-        phone: f.get("phone"), email: f.get("email"),
-        options: {
-          docs: !!f.get("opt_docs"), fiche: !!f.get("opt_fiche"),
-          vefa: !!f.get("opt_vefa"), call: !!f.get("opt_call"), visit: !!f.get("opt_visit")
-        },
-        message: f.get("message")||""
-      };
-
-      var endpoint = "https://formspree.io/f/mkgqppvv";
-
-      fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          _subject: "Lead: Le Grand Clos | Lot "+payload.lot+" | "+payload.type,
-          _replyto: payload.email,
-          lot: payload.lot, type: payload.type, surface: payload.surface,
-          terrain: payload.terrain, pack: payload.pack, price: payload.price,
-          lastName: payload.lastName, firstName: payload.firstName,
-          phone: payload.phone, email: payload.email,
-          options: payload.options, message: payload.message
-        })
-      }).then(function(resp){
-        if(resp.ok){
-          leadForm.classList.add("hidden");
-          var wrap = document.createElement("div");
-          wrap.style.textAlign = "center";
-          wrap.style.padding = "60px 20px";
-          wrap.style.fontSize = "18px";
-          wrap.innerHTML = ''
-            + '<h2 style="color:var(--ok);font-size:26px;margin-bottom:20px;">'+((window.__I18N__&&window.__I18N__.thanksTitle)||'Merci pour votre demande !')+'</h2>'
-            + '<p>'+((window.__I18N__&&window.__I18N__.thanksLead)||'Notre équipe CRAFT vous contactera sous peu.')+'</p>'
-            + '<hr style="margin:30px auto;width:120px;border:0;border-top:2px solid #e5e7eb;">'
-            + '<p style="font-size:16px;color:var(--muted);margin-top:30px;"><strong>CRAFT IMMO</strong><br>'
-            + '<a href="mailto:contact@craft.immo" style="color:var(--brand);text-decoration:none;">contact@craft.immo</a><br>📞 +33 1 88 24 17 76</p>'
-            + '<p style="margin-top:40px;font-size:14px;color:var(--muted);">'+((window.__I18N__&&window.__I18N__.thanksClose)||'Merci de votre confiance !<br>Vous pouvez fermer cette page en toute sécurité.')+'</p>';
-          s.parentElement.appendChild(wrap);
-          s.textContent = "";
-        } else {
-          s.innerHTML = (window.__I18N__&&window.__I18N__.msgFail) ? window.__I18N__.msgFail : "Oups… impossible d’envoyer la demande. Réessayez plus tard ou contactez-nous par téléphone.";
-          s.style.color = "var(--danger)";
-        }
-      }).catch(function(){
-        s.innerHTML = (window.__I18N__&&window.__I18N__.msgNet) ? window.__I18N__.msgNet : "Erreur réseau. Vérifiez la connexion et réessayez.";
-        s.style.color = "var(--danger)";
-      });
-    });
-  }
   </script>
 </body>
 </html>
